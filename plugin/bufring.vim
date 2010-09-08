@@ -1,3 +1,10 @@
+" ============================================================================
+" File:        plugin/bufring.vim
+" Version:     0.0
+" Modified:    2010-09-08
+" Description: Allows to switch back to buffers in the order they were viewed.
+" Maintainer:  Israel Chauca F. <israelchauca@gmail.com>
+
 if exists("g:loaded_bufring") || &cp
   " User doesn't want this plugin or compatible is set, let's get out!
   finish
