@@ -16,9 +16,7 @@ if exists("g:loaded_bufring") || &cp
 endif
 let g:loaded_bufring = 1
 
-if !exists('s:bufring')
-  let s:bufring = [1]
-endif
+let s:bufring = []
 
 "function! EchoRing()
   "echom string(s:bufring)
@@ -26,6 +24,9 @@ endif
 
 function! s:update_ring()
   "echom string(s:bufring)
+  if &buftype != ''
+    return ""
+  endif
   let bufnum = bufnr('%')
   let bufindex = index(s:bufring, bufnum) != -1 
   if bufindex
@@ -66,13 +67,20 @@ function! s:switch_buf(...)
   endif
 endfunction
 
+function! s:remove_buf(buf)
+  if len(s:bufring) > 1
+    call remove(s:bufring,index(s:bufring, a:buf))
+  endif
+endfunction
+
 augroup bufring
   au!
-  au BufEnter * call <SID>update_ring()
+  au BufEnter,BufNew * call <SID>update_ring()
+  au BufDelete * call <SID>remove_buf(expand('<abuf>'))
 augroup END
 
 noremap <Plug>BufRing :Bufring<CR>
-if hasmapto('<Plug>BufRing','n')
+if !hasmapto('<Plug>BufRing','n')
   silent! nmap <leader>br <Plug>BufRing
 endif
 
