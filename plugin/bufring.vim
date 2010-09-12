@@ -28,7 +28,7 @@ function! s:update_ring()
     return ""
   endif
   let bufnum = bufnr('%')
-  let bufindex = index(s:bufring, bufnum) != -1 
+  let bufindex = index(s:bufring, bufnum) != -1
   if bufindex
     call remove(s:bufring, index(s:bufring, bufnum))
   "echom string(s:bufring)
@@ -46,9 +46,12 @@ function! s:switch_buf(...)
     let ccount = v:count
     let args = ''
   endif
+
+  let len = len(s:bufring)
+  let ccount = ccount - ( len *  (ccount / len ) )
+  let ccount = ccount >= 0 ? ccount : -1 * ccount
   "echom 'count: '.ccount
   "echom 'args: '.args
-  let len = len(s:bufring)
 
   if args != '' && ccount == 0
     "echom 1
@@ -56,14 +59,17 @@ function! s:switch_buf(...)
     exec  'buffer ' . args
   elseif args != '' && ccount != 0
     echom 'Use either a count or an argument, not both.'
-  elseif ccount == 0
+  elseif ccount == 0 && len > 1
     "echom 2
     "echom 'buffer ' . s:bufring[-2]
     exec  'buffer ' . s:bufring[-2]
-  else
+  elseif ccount > 0
     "echom 3
     "echom 'buffer ' . s:bufring[-(ccount+1)]
     exec  'buffer ' . s:bufring[-(ccount+1)]
+  else
+    "echom 4
+    echom 'No previous buffer to switch back to.'
   endif
 endfunction
 
